@@ -1,0 +1,623 @@
+import React, { useState } from 'react';
+import { 
+  BookOpen, 
+  Activity, 
+  CheckCircle, 
+  Circle, 
+  Dumbbell, 
+  Coffee, 
+  Utensils, 
+  Moon, 
+  Save,
+  Calendar,
+  History,
+  ChevronDown,
+  ChevronUp,
+  Info,
+  Filter,
+  Trophy
+} from 'lucide-react';
+
+const rutinas = {
+  1: {
+    nombre: "DÍA 1: Enfoque Fuerza y Empuje",
+    ejercicios: [
+      { id: 'd1_e1', nombre: "Sentadilla Goblet", carga: "15.5 kg (1 mancuerna)", series: 4, reps: "10-12",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Sentadilla+Goblet",
+        tips: ["Mantén la mancuerna pegada al pecho", "Baja hasta que los codos toquen las rodillas", "Empuja con los talones al subir"],
+        beneficios: "Fortalece cuádriceps, glúteos y mejora la estabilidad del core." },
+      { id: 'd1_e2', nombre: "Floor Press con mancuernas", carga: "11.5 - 15.5 kg c/u", series: 4, reps: "8-10",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Floor+Press",
+        tips: ["Apoya toda la espalda en el suelo", "Los codos deben bajar a 45 grados", "Haz una pausa de 1 seg en el suelo sin rebotar"],
+        beneficios: "Desarrolla el pecho y tríceps de forma segura para las articulaciones del hombro." },
+      { id: 'd1_e3', nombre: "Remo inclinado bilateral", carga: "11.5 kg c/u", series: 4, reps: "10-12",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Remo+Inclinado",
+        tips: ["Haz una bisagra de cadera con la espalda recta", "Lleva las mancuernas hacia tu ombligo", "Junta las escápulas arriba"],
+        beneficios: "Añade densidad a la espalda alta y mejora enormemente la postura." },
+      { id: 'd1_e4', nombre: "Zancadas estáticas", carga: "5.5 - 11.5 kg c/u", series: 3, reps: "10/pierna",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Zancadas",
+        tips: ["Da un paso largo", "Baja recto, sin inclinarte hacia adelante", "La rodilla trasera debe casi rozar el suelo"],
+        beneficios: "Trabajo unilateral intenso para compensar asimetrías en las piernas." },
+      { id: 'd1_e5', nombre: "Press militar sentado", carga: "5.5 - 11.5 kg c/u", series: 3, reps: "10-12",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Press+Militar",
+        tips: ["Mantén el core bien apretado", "No arquees en exceso la zona lumbar", "Baja hasta la altura de las orejas"],
+        beneficios: "Desarrolla los deltoides frontales y laterales para hombros más anchos." },
+      { id: 'd1_e6', nombre: "Curl de bíceps alterno", carga: "5.5 kg c/u", series: 3, reps: "12-15",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Curl+Biceps",
+        tips: ["Pega los codos a tus costillas", "Sube explosivo y baja lento en 3 segundos", "Gira la muñeca al subir"],
+        beneficios: "Aísla y hace crecer los músculos del bíceps." }
+    ]
+  },
+  2: {
+    nombre: "DÍA 2: Cadena Posterior y Tracción",
+    ejercicios: [
+      { id: 'd2_e1', nombre: "Peso Muerto Rumano", carga: "11.5 - 15.5 kg c/u", series: 4, reps: "10-12",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Peso+Muerto+Rumano",
+        tips: ["Rodillas semiflexionadas (no rígidas)", "Empuja la cadera hacia atrás", "Siente el estiramiento en los femorales"],
+        beneficios: "Poderoso constructor de glúteos e isquiosurales, ideal para potencia en fútbol." },
+      { id: 'd2_e2', nombre: "Flexiones / Push-ups", carga: "Peso corporal", series: 4, reps: "10-15",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Flexiones",
+        tips: ["Cuerpo en línea recta", "Codos apuntan en diagonal hacia atrás", "Toca el pecho en el suelo"],
+        beneficios: "El mejor ejercicio de empuje con peso corporal para el pecho y core." },
+      { id: 'd2_e3', nombre: "Remo unilateral (silla)", carga: "15.5 kg (1 mancuerna)", series: 4, reps: "10-12/lado",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Remo+Unilateral",
+        tips: ["Apoya una mano y rodilla sobre la silla", "Tracciona llevando el codo hacia la cadera", "Evita rotar el torso"],
+        beneficios: "Corrige asimetrías y aísla los dorsales (espalda media)." },
+      { id: 'd2_e4', nombre: "Puente de glúteos", carga: "15.5 kg en cadera", series: 3, reps: "12-15",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Puente+Gluteos",
+        tips: ["Apoya bien los talones cerca de los glúteos", "Contrae fuerte un segundo arriba", "No arquees la espalda baja"],
+        beneficios: "Activación directa y profunda del glúteo mayor." },
+      { id: 'd2_e5', nombre: "Elevaciones laterales", carga: "5.5 kg c/u", series: 4, reps: "12-15",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Elevaciones+Laterales",
+        tips: ["Ligera flexión de codos", "Imagina que sirves agua de unas jarras", "Controla la bajada para mayor estímulo"],
+        beneficios: "Da forma redondeada y amplitud visual a los hombros." },
+      { id: 'd2_e6', nombre: "Extensión tríceps copa", carga: "11.5 kg (1 mancuerna)", series: 3, reps: "12-15",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Extension+Triceps",
+        tips: ["Sujeta la mancuerna tras la nuca", "Mantén codos cerrados apuntando al techo", "Estira completo arriba"],
+        beneficios: "Enfoca la cabeza larga del tríceps para más volumen de brazo." }
+    ]
+  },
+  3: {
+    nombre: "DÍA 3: Densidad y Pierna Unilateral",
+    ejercicios: [
+      { id: 'd3_e1', nombre: "Sentadilla Búlgara", carga: "5.5 - 11.5 kg c/u", series: 3, reps: "8-10/pierna",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Sentadilla+Bulgara",
+        tips: ["Empeine trasero apoyado en silla", "Torso ligeramente inclinado al frente", "Baja lento"],
+        beneficios: "Máxima hipertrofia de pierna con poco peso. Excelente para rodillas." },
+      { id: 'd3_e2', nombre: "Floor Press (agarre neutro)", carga: "11.5 - 15.5 kg c/u", series: 4, reps: "10-12",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Floor+Press+Neutro",
+        tips: ["Palmas mirándose entre sí", "Codos pegados a los costados", "Pausa en el suelo"],
+        beneficios: "Mayor énfasis en los tríceps y porción central del pecho." },
+      { id: 'd3_e3', nombre: "Remo al mentón", carga: "5.5 - 11.5 kg c/u", series: 3, reps: "10-12",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Remo+Menton",
+        tips: ["Tira con los codos hacia arriba y afuera", "Mantén manos cerca del cuerpo", "Detente a la altura del pecho"],
+        beneficios: "Desarrolla los trapecios y deltoides frontales/laterales." },
+      { id: 'd3_e4', nombre: "Pájaros / Deltoide posterior", carga: "5.5 kg c/u", series: 3, reps: "12-15",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Pajaros",
+        tips: ["Torso casi paralelo al suelo", "Abre los brazos como para volar", "Aprieta la espalda alta"],
+        beneficios: "Mejora la salud del hombro, reduce dolores y mejora postura." },
+      { id: 'd3_e5', nombre: "Elevación de talones", carga: "11.5 - 15.5 kg (1 mancuerna)", series: 4, reps: "15-20",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Elevacion+Talones",
+        tips: ["Hazlo de pie sobre un escalón", "Pausa 1 segundo arriba", "Estira completo abajo"],
+        beneficios: "Hipertrofia focalizada de pantorrillas (gemelos)." },
+      { id: 'd3_e6', nombre: "Plancha abdominal", carga: "Peso corporal", series: 3, reps: "45-60 seg",
+        imagen: "https://placehold.co/600x300/d1fae5/065f46?text=Plancha",
+        tips: ["Aprieta glúteos y abdomen", "Cuerpo en línea recta", "Respira profundo y constante"],
+        beneficios: "Core fuerte, prevención de lesiones lumbares." }
+    ]
+  }
+};
+
+const horarios = {
+  fuerza: [
+    { id: 'f1', time: 'Mañana', text: 'Café negro + Agua (Ayuno)', icon: Coffee },
+    { id: 'f2', time: '12:00 PM', text: 'Entrenamiento Full Body', icon: Dumbbell },
+    { id: 'f3', time: '01:00 PM', text: 'Batido (24g prot) + 5g Creatina', icon: Activity },
+    { id: 'f4', time: '02:00 PM', text: 'Almuerzo sólido', icon: Utensils },
+    { id: 'f5', time: '09:00 PM', text: 'Cena sólida', icon: Moon }
+  ],
+  futbol: [
+    { id: 'fu1', time: 'Mañana', text: 'Café negro + Agua (Ayuno)', icon: Coffee },
+    { id: 'fu2', time: '02:00 PM', text: 'Almuerzo sólido + 5g Creatina', icon: Utensils },
+    { id: 'fu3', time: 'Tarde/Noche', text: 'Partido de Fútbol', icon: Activity },
+    { id: 'fu4', time: '09:00 PM', text: 'Cena sólida', icon: Moon }
+  ],
+  descanso: [
+    { id: 'de1', time: 'Mañana', text: 'Agua / Infusión (Ayuno)', icon: Coffee },
+    { id: 'de2', time: '02:00 PM', text: 'Almuerzo + 5g Creatina', icon: Utensils },
+    { id: 'de3', time: 'Tarde', text: 'Descanso activo', icon: CheckCircle },
+    { id: 'de4', time: '09:00 PM', text: 'Cena sólida', icon: Moon }
+  ]
+};
+
+export default function RecomposicionApp() {
+  const [activeTab, setActiveTab] = useState('tracker'); 
+  const [tipoDia, setTipoDia] = useState('fuerza'); 
+  const [diaRutina, setDiaRutina] = useState(1); 
+  
+  const [fechaActual, setFechaActual] = useState(new Date().toISOString().split('T')[0]);
+  const [tareasCompletadas, setTareasCompletadas] = useState({});
+  const [progresoEjercicios, setProgresoEjercicios] = useState({});
+  const [detallesAbiertos, setDetallesAbiertos] = useState({});
+  const [mensajeExito, setMensajeExito] = useState(false);
+
+  const [historial, setHistorial] = useState([]);
+  const [filtroTipo, setFiltroTipo] = useState('todos');
+  const [filtroFecha, setFiltroFecha] = useState('');
+
+  const formatearFechaDDMMYY = (isoString) => {
+    if (!isoString) return '';
+    const partes = isoString.split('-');
+    if (partes.length !== 3) return isoString;
+    return `${partes[2]}-${partes[1]}-${partes[0].slice(2)}`;
+  };
+
+  const toggleDetalle = (id) => {
+    setDetallesAbiertos(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleTarea = (id) => {
+    setTareasCompletadas(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleEjercicioInput = (id, campo, valor) => {
+    setProgresoEjercicios(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [campo]: valor
+      }
+    }));
+  };
+
+  const toggleEjercicioCheck = (id) => {
+    setProgresoEjercicios(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        completado: !prev[id]?.completado
+      }
+    }));
+  };
+
+  const handleGuardarProgreso = () => {
+    const nuevoRegistro = {
+      id: Date.now(),
+      fecha: fechaActual,
+      fechaFormateada: formatearFechaDDMMYY(fechaActual),
+      tipoDia,
+      diaRutina: tipoDia === 'fuerza' ? diaRutina : null,
+      tareasCompletadas: { ...tareasCompletadas },
+      progresoEjercicios: tipoDia === 'fuerza' ? { ...progresoEjercicios } : null,
+    };
+    
+    setHistorial(prev => [nuevoRegistro, ...prev]);
+    
+    // Mostrar mensaje temporal en lugar de 'alert'
+    setMensajeExito(true);
+    setTimeout(() => setMensajeExito(false), 3000);
+    
+    // Reiniciar selecciones para el siguiente día si se desea
+    setTareasCompletadas({});
+    setProgresoEjercicios({});
+  };
+
+  const renderTracker = () => {
+    const horarioActual = horarios[tipoDia];
+    const rutinaActual = rutinas[diaRutina];
+
+    return (
+      <div className="space-y-6 animate-fade-in pb-20">
+        
+        {mensajeExito && (
+          <div className="bg-emerald-100 border border-emerald-400 text-emerald-700 px-4 py-3 rounded-xl relative shadow-sm transition-all" role="alert">
+            <span className="block sm:inline font-bold flex items-center">
+              <CheckCircle className="inline w-5 h-5 mr-2" />
+              ¡Progreso guardado correctamente en el Historial!
+            </span>
+          </div>
+        )}
+
+        {/* Control de Fecha y Día */}
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-5 gap-4">
+            <h2 className="text-lg font-bold text-slate-800">Planificación del Día</h2>
+            <div className="flex items-center space-x-2 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200">
+              <Calendar className="h-5 w-5 text-emerald-600" />
+              <input 
+                type="date" 
+                value={fechaActual}
+                onChange={(e) => setFechaActual(e.target.value)}
+                className="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer"
+              />
+              <span className="text-xs text-slate-400 font-medium ml-1">
+                (Formato: {formatearFechaDDMMYY(fechaActual)})
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            <button 
+              onClick={() => { setTipoDia('fuerza'); setTareasCompletadas({}); }}
+              className={`py-3 rounded-lg font-bold text-sm transition-all border-2 flex flex-col items-center gap-1 ${tipoDia === 'fuerza' ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 'bg-white border-slate-100 text-slate-500 hover:border-emerald-200'}`}
+            >
+              <Dumbbell className="h-5 w-5" />
+              Fuerza
+            </button>
+            <button 
+              onClick={() => { setTipoDia('futbol'); setTareasCompletadas({}); }}
+              className={`py-3 rounded-lg font-bold text-sm transition-all border-2 flex flex-col items-center gap-1 ${tipoDia === 'futbol' ? 'bg-blue-50 border-blue-500 text-blue-700' : 'bg-white border-slate-100 text-slate-500 hover:border-blue-200'}`}
+            >
+              <Activity className="h-5 w-5" />
+              Fútbol
+            </button>
+            <button 
+              onClick={() => { setTipoDia('descanso'); setTareasCompletadas({}); }}
+              className={`py-3 rounded-lg font-bold text-sm transition-all border-2 flex flex-col items-center gap-1 ${tipoDia === 'descanso' ? 'bg-indigo-50 border-indigo-500 text-indigo-700' : 'bg-white border-slate-100 text-slate-500 hover:border-indigo-200'}`}
+            >
+              <Moon className="h-5 w-5" />
+              Descanso
+            </button>
+          </div>
+        </div>
+
+        {/* Hábitos del Día */}
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+          <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
+            <CheckCircle className="mr-2 text-emerald-600 h-5 w-5" />
+            Checklist de Nutrición
+          </h2>
+          <div className="space-y-3">
+            {horarioActual.map((item) => {
+              const Icon = item.icon;
+              const isDone = tareasCompletadas[item.id];
+              return (
+                <div 
+                  key={item.id} 
+                  onClick={() => toggleTarea(item.id)}
+                  className={`flex items-center p-3 rounded-lg cursor-pointer transition-all border ${isDone ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-100 hover:bg-slate-100'}`}
+                >
+                  <button className={`mr-3 p-1 rounded-full ${isDone ? 'text-emerald-500' : 'text-slate-300'}`}>
+                    {isDone ? <CheckCircle className="h-6 w-6" /> : <Circle className="h-6 w-6" />}
+                  </button>
+                  <div className="flex-1">
+                    <p className={`font-semibold text-sm ${isDone ? 'text-slate-500 line-through' : 'text-slate-700'}`}>
+                      {item.text}
+                    </p>
+                    <p className="text-xs text-slate-400 font-medium">{item.time}</p>
+                  </div>
+                  <Icon className={`h-5 w-5 ${isDone ? 'text-emerald-400' : 'text-slate-400'}`} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Ejercicios (Solo si es día de fuerza) */}
+        {tipoDia === 'fuerza' && (
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-lg font-bold text-slate-800 flex items-center">
+                <Dumbbell className="mr-2 text-emerald-600 h-5 w-5" />
+                Entrenamiento
+              </h2>
+              <div className="flex gap-2">
+                {[1, 2, 3].map(dia => (
+                  <button
+                    key={dia}
+                    onClick={() => setDiaRutina(dia)}
+                    className={`px-3 py-1 text-sm font-bold rounded-md transition-colors ${diaRutina === dia ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                  >
+                    Día {dia}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <h3 className="text-sm font-bold text-emerald-700 mb-4 bg-emerald-50 p-2 rounded text-center">
+              {rutinaActual.nombre}
+            </h3>
+
+            <div className="space-y-4">
+              {rutinaActual.ejercicios.map((ej) => {
+                const dataProgreso = progresoEjercicios[ej.id] || {};
+                const isCompleted = dataProgreso.completado;
+                const isOpen = detallesAbiertos[ej.id];
+
+                return (
+                  <div key={ej.id} className={`p-4 rounded-lg border transition-all ${isCompleted ? 'bg-slate-50 border-emerald-300 shadow-sm' : 'bg-white border-slate-200 shadow-sm'}`}>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex-1">
+                        <h3 className={`font-bold ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
+                          {ej.nombre}
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-1">
+                          <span className="font-semibold text-slate-600">Meta:</span> {ej.series} series | {ej.reps} reps
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          <span className="font-semibold text-slate-600">Carga:</span> {ej.carga}
+                        </p>
+                        
+                        <button 
+                          onClick={() => toggleDetalle(ej.id)}
+                          className="flex items-center text-xs font-bold text-emerald-600 mt-2 hover:text-emerald-700 transition-colors bg-emerald-50 px-2 py-1 rounded"
+                        >
+                          <Info className="h-3 w-3 mr-1" />
+                          {isOpen ? 'Ocultar detalles' : 'Ver técnica e imágenes'}
+                          {isOpen ? <ChevronUp className="h-3 w-3 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
+                        </button>
+                      </div>
+                      <button 
+                        onClick={() => toggleEjercicioCheck(ej.id)}
+                        className={`p-2 rounded-full transition-colors ${isCompleted ? 'text-emerald-500 bg-emerald-100' : 'text-slate-300 hover:bg-slate-100 hover:text-slate-500'}`}
+                      >
+                        {isCompleted ? <CheckCircle className="h-7 w-7" /> : <Circle className="h-7 w-7" />}
+                      </button>
+                    </div>
+                    
+                    {/* Contenido Desplegable (Imagen y Tips) */}
+                    {isOpen && (
+                      <div className="mt-3 mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200 animate-fade-in">
+                        <img 
+                          src={ej.imagen} 
+                          alt={ej.nombre} 
+                          className="w-full h-32 object-cover rounded-md mb-3 border border-slate-300 shadow-inner"
+                        />
+                        <h4 className="text-xs font-bold text-slate-800 mb-1">Técnica Correcta:</h4>
+                        <ul className="list-disc pl-4 text-xs text-slate-600 mb-3 space-y-1">
+                          {ej.tips.map((tip, idx) => <li key={idx}>{tip}</li>)}
+                        </ul>
+                        <h4 className="text-xs font-bold text-slate-800 mb-1">Beneficios:</h4>
+                        <p className="text-xs text-slate-600 italic">{ej.beneficios}</p>
+                      </div>
+                    )}
+                    
+                    {/* Campos de entrada para series y repeticiones logradas */}
+                    <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-100">
+                      <div className="flex-1">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Series Logradas</label>
+                        <input 
+                          type="number" 
+                          min="0"
+                          value={dataProgreso.seriesLogradas || ''}
+                          onChange={(e) => handleEjercicioInput(ej.id, 'seriesLogradas', e.target.value)}
+                          disabled={isCompleted}
+                          placeholder={ej.series}
+                          className="w-full bg-slate-100 border border-transparent focus:bg-white focus:border-emerald-500 text-sm font-semibold rounded-md px-3 py-2 outline-none transition-colors disabled:opacity-50"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Reps Logradas</label>
+                        <input 
+                          type="number" 
+                          min="0"
+                          value={dataProgreso.repsLogradas || ''}
+                          onChange={(e) => handleEjercicioInput(ej.id, 'repsLogradas', e.target.value)}
+                          disabled={isCompleted}
+                          placeholder={ej.reps.split('-')[0]} 
+                          className="w-full bg-slate-100 border border-transparent focus:bg-white focus:border-emerald-500 text-sm font-semibold rounded-md px-3 py-2 outline-none transition-colors disabled:opacity-50"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Botón Guardar Progreso Global */}
+        <div className="mt-8 flex justify-end sticky bottom-4 z-10 md:static">
+          <button 
+            onClick={handleGuardarProgreso}
+            className="flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-200 transition-all transform hover:scale-105 active:scale-95 w-full justify-center border-2 border-emerald-500 text-lg"
+          >
+            <Save className="h-6 w-6 mr-2" />
+            Guardar Día de {tipoDia.charAt(0).toUpperCase() + tipoDia.slice(1)}
+          </button>
+        </div>
+
+      </div>
+    );
+  };
+
+  const renderHistorial = () => {
+    const historialFiltrado = historial.filter(registro => {
+      const cumpleTipo = filtroTipo === 'todos' || registro.tipoDia === filtroTipo;
+      const cumpleFecha = !filtroFecha || registro.fecha === filtroFecha;
+      return cumpleTipo && cumpleFecha;
+    });
+
+    return (
+      <div className="space-y-6 animate-fade-in pb-10">
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-100">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center">
+              <History className="w-6 h-6 mr-2 text-emerald-600" />
+              Historial de Progreso
+            </h2>
+            
+            {/* Filtros */}
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+              <div className="relative flex-1 sm:flex-none">
+                <select 
+                  value={filtroTipo} 
+                  onChange={(e) => setFiltroTipo(e.target.value)}
+                  className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-2 pl-3 pr-8 rounded-lg text-sm font-semibold focus:outline-none focus:border-emerald-500 cursor-pointer"
+                >
+                  <option value="todos">Todos los tipos</option>
+                  <option value="fuerza">Fuerza</option>
+                  <option value="futbol">Fútbol</option>
+                  <option value="descanso">Descanso</option>
+                </select>
+                <Filter className="absolute right-2 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
+              </div>
+              
+              <div className="flex items-center gap-2 flex-1 sm:flex-none">
+                <input 
+                  type="date"
+                  value={filtroFecha}
+                  onChange={(e) => setFiltroFecha(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-700 py-2 px-3 rounded-lg text-sm font-semibold focus:outline-none focus:border-emerald-500 cursor-pointer"
+                />
+                {filtroFecha && (
+                  <button 
+                    onClick={() => setFiltroFecha('')}
+                    className="text-xs text-rose-600 hover:text-white font-bold px-3 py-2 bg-rose-50 hover:bg-rose-500 rounded-lg whitespace-nowrap transition-colors"
+                  >
+                    Limpiar
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {historialFiltrado.length === 0 ? (
+            <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+              <History className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+              <p className="text-slate-500 font-medium">No hay registros guardados que coincidan.</p>
+              <p className="text-slate-400 text-sm mt-1">Guarda tu progreso en la pestaña de Tracker para verlo aquí.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {historialFiltrado.map(registro => {
+                const totalTareas = horarios[registro.tipoDia].length;
+                const tareasHechas = Object.values(registro.tareasCompletadas).filter(v => v).length;
+                
+                return (
+                  <div key={registro.id} className="border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div className={`p-4 border-b flex justify-between items-center ${
+                      registro.tipoDia === 'fuerza' ? 'bg-emerald-50 border-emerald-100' : 
+                      registro.tipoDia === 'futbol' ? 'bg-blue-50 border-blue-100' : 'bg-indigo-50 border-indigo-100'
+                    }`}>
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-slate-700 bg-white px-3 py-1.5 rounded-md text-sm shadow-sm border border-slate-100">
+                          {registro.fechaFormateada}
+                        </span>
+                        <span className={`text-xs font-extrabold uppercase tracking-widest px-2 py-1 rounded bg-white/50 ${
+                          registro.tipoDia === 'fuerza' ? 'text-emerald-700' : 
+                          registro.tipoDia === 'futbol' ? 'text-blue-700' : 'text-indigo-700'
+                        }`}>
+                          {registro.tipoDia} {registro.diaRutina ? `- DÍA ${registro.diaRutina}` : ''}
+                        </span>
+                      </div>
+                      <div className="text-xs font-bold text-slate-600 bg-white px-3 py-1.5 rounded-md shadow-sm border border-slate-100 flex items-center">
+                        <CheckCircle className="w-3 h-3 mr-1 text-emerald-500" />
+                        Hábitos: {tareasHechas}/{totalTareas}
+                      </div>
+                    </div>
+                    
+                    {/* Renderización de resultados de ejercicios si fue día de fuerza */}
+                    {registro.tipoDia === 'fuerza' && registro.progresoEjercicios && (
+                      <div className="p-4 bg-white">
+                        <h4 className="text-[11px] font-bold text-slate-400 uppercase mb-3 tracking-wider flex items-center">
+                          <Trophy className="w-4 h-4 mr-1 text-amber-500" /> Desempeño en Ejercicios
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {rutinas[registro.diaRutina].ejercicios.map(ej => {
+                            const prog = registro.progresoEjercicios[ej.id];
+                            if (!prog || !prog.completado) return null;
+                            return (
+                              <div key={ej.id} className="flex justify-between items-center bg-slate-50 border border-slate-100 p-3 rounded-lg text-sm">
+                                <span className="truncate pr-2 font-semibold text-slate-700 text-xs">{ej.nombre}</span>
+                                <span className="text-emerald-700 font-extrabold text-xs bg-emerald-100 px-2 py-1 rounded border border-emerald-200">
+                                  {prog.seriesLogradas || ej.series}s x {prog.repsLogradas || ej.reps.split('-')[0]}r
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderGuide = () => (
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 space-y-6 animate-fade-in text-slate-700">
+      <h2 className="text-2xl font-bold text-slate-800 mb-4 border-b pb-2">Guía de Recomposición</h2>
+      
+      <section>
+        <h3 className="font-bold text-lg text-emerald-700 mb-2">Resumen Nutricional</h3>
+        <ul className="list-disc pl-5 space-y-1 text-sm">
+          <li><strong>Calorías:</strong> 1900 - 1950 kcal diarias (Déficit ligero del 15%).</li>
+          <li><strong>Proteína:</strong> 145 - 150g al día.</li>
+          <li><strong>Ayuno:</strong> 15 horas (9:00 PM a 12:00 PM). Romper con proteína.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3 className="font-bold text-lg text-emerald-700 mb-2">Suplementación</h3>
+        <ul className="list-disc pl-5 space-y-1 text-sm">
+          <li><strong>Creatina:</strong> 5g CADA DÍA. (En entreno con batido, en descanso con almuerzo).</li>
+          <li><strong>Proteína:</strong> 1 scoop (24g) post-entrenamiento de fuerza.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3 className="font-bold text-lg text-emerald-700 mb-2">Cargas Sugeridas</h3>
+        <ul className="list-disc pl-5 space-y-1 text-sm">
+          <li><strong>Mancuerna Pesada (15.5kg):</strong> Barra + 5kg + 5kg + 2kg + 2kg</li>
+          <li><strong>Mancuerna Media (11.5kg):</strong> Barra + 5kg + 5kg</li>
+          <li><strong>Mancuerna Ligera (5.5kg):</strong> Barra + 2kg + 2kg</li>
+        </ul>
+      </section>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20 selection:bg-emerald-200">
+      {/* Header */}
+      <header className="bg-emerald-700 text-white p-5 shadow-md sticky top-0 z-20">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
+          <Activity className="h-8 w-8 text-emerald-300" />
+          <div>
+            <h1 className="text-xl md:text-2xl font-extrabold leading-tight tracking-tight">Recomposición Tracker</h1>
+            <p className="text-emerald-100 text-xs md:text-sm font-medium">Ayuno 15/9 & Fuerza</p>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-3xl mx-auto p-4 mt-2">
+        
+        {/* Navegación por Pestañas */}
+        <div className="flex bg-slate-200 p-1.5 rounded-xl mb-6 shadow-inner gap-1.5">
+          <button
+            onClick={() => setActiveTab('tracker')}
+            className={`flex-1 flex justify-center items-center py-2.5 rounded-lg font-bold text-sm transition-all ${activeTab === 'tracker' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            <CheckCircle className="w-4 h-4 mr-1.5" />
+            Tracker
+          </button>
+          <button
+            onClick={() => setActiveTab('historial')}
+            className={`flex-1 flex justify-center items-center py-2.5 rounded-lg font-bold text-sm transition-all ${activeTab === 'historial' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            <History className="w-4 h-4 mr-1.5" />
+            Historial
+          </button>
+          <button
+            onClick={() => setActiveTab('guide')}
+            className={`flex-1 flex justify-center items-center py-2.5 rounded-lg font-bold text-sm transition-all ${activeTab === 'guide' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            <BookOpen className="w-4 h-4 mr-1.5" />
+            Guía
+          </button>
+        </div>
+
+        {/* Vistas Dinámicas */}
+        {activeTab === 'tracker' && renderTracker()}
+        {activeTab === 'historial' && renderHistorial()}
+        {activeTab === 'guide' && renderGuide()}
+
+      </main>
+    </div>
+  );
+}
